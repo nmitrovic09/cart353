@@ -1,5 +1,11 @@
-/*Nikola Mitrovic
-CART 353 - A1 Image Processing*/
+/*     Nikola Mitrovic
+CART 353 - A1 Image Processing
+Press Keys:
+A and S ---> to alternate the opacities between the images
+D ---> to saturate the image
+F ---> to blur the first image
+G ---> to blur the second image
+H ---> to save the image         */
 
 //create two insect objects
 Insect bug;
