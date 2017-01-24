@@ -1,3 +1,6 @@
+/*Nikola Mitrovic
+CART 353 - A1 Image Processing*/
+
 //create two insect objects
 Insect bug;
 SecondInsect bug2;
