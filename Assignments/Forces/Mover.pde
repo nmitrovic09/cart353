@@ -15,7 +15,8 @@ class Mover {
     velocity.add(acceleration);
     acceleration.mult(0);
   }
-
+  
+  
   void applyForce(PVector force) {
     PVector f = PVector.div(force, mass);
     acceleration.add(f);

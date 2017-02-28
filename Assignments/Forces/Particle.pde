@@ -1,5 +1,5 @@
 class Particle {
-  
+
   //x and y location
   PVector location;
   //speed
@@ -8,11 +8,14 @@ class Particle {
   PVector acceleration;
   //size
   float mass;
+  
   float G;
 
   //direction movement booleans
   boolean leftBoolean, rightBoolean, upBoolean, downBoolean, stop;
 
+  //moving collision
+  boolean collision = false;
   //rotation range
   int range = width;
 
@@ -34,6 +37,7 @@ class Particle {
     acceleration.add(f);
   }
 
+  //attraction force
   PVector attract(Mover m) {
     //create a vector between the particle and movers
     //direction of the force
@@ -43,7 +47,6 @@ class Particle {
     //limit the distance to a min and a max
     distance = constrain(distance, 5.0, 25.0);
 
-
     force.normalize();
     //formula
     float strength = (G * mass * m.mass) / (distance * distance);
@@ -52,14 +55,27 @@ class Particle {
     //return a value
     return force;
   }
-  
+
+  //calculate distance between particle and mover
+  float distance(Mover m) {
+    //get the vector between the particle location 
+    //and mover location
+    PVector distance = PVector.sub(location, m.location);
+    //covert the distance into mag
+    float d = distance.mag();
+    distance.normalize();
+    
+    //return a float value
+    return d;
+  }
+
   //declare the particle with the movement
   void run() {
     update();
     display();
     keyPress();
   }
-  
+
   //update movement
   void update() {
     //add speed
@@ -69,27 +85,27 @@ class Particle {
     //clear the acceleration
     acceleration.mult(0);
   }
-  
+
   //movement when keys are pressed
   void keyPress() {
     //left arrow
     if (keyCode == LEFT) {
-      velocity.x -= 0.2;
+      velocity.x -= 0.1;
     }
     //right arrow
     if (keyCode == RIGHT) {
       rightBoolean = true;
-      velocity.x += 0.2;
+      velocity.x += 0.1;
     }
     //up arrow 
     if (keyCode == UP) {
       upBoolean = true;
-      velocity.y -= 0.2;
+      velocity.y -= 0.1;
     }
     //down arrow 
     if (keyCode == DOWN) {
       downBoolean = true;
-      velocity.y += 0.2;
+      velocity.y += 0.1;
     }
     //stop the movement with spacebar
     if (keyCode == 32) {
@@ -97,7 +113,7 @@ class Particle {
       velocity.mult(0);
     }
   }
-  
+
   //check the window borders
   void checkEdges() {
     if (location.x > width || location.x < 0) {
@@ -106,7 +122,7 @@ class Particle {
       velocity.y *= -1;
     }
   }
-  
+
   //declare the praticle
   void display() {
     strokeWeight(2);
