@@ -2,14 +2,22 @@ class Coordinate {
   PVector origin;
   //color strokeColor = color(255);
   boolean isUndulating =false;
+  
   float targetHeight;
   float prevTarget;
-
+  
+  //new height from the finger interaction  
+  PVector targetHeightFinger;
+  PVector prevTargetHeightFinger;
+  
   //constructor
   Coordinate(float x, float y, float z, float _t) {
     origin = new PVector(x, y, z);
     targetHeight = _t;
     prevTarget =_t;
+
+    targetHeightFinger = new PVector(x, y, z);
+    prevTargetHeightFinger = new PVector(x, y, z);
   }
 
   //methods
