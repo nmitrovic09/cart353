@@ -1,6 +1,6 @@
 class Interaction extends Landscape {
 
-  float fingersY;
+  float fingerY;
 
   //height target array
   ArrayList<Float> heightTargetArray;
@@ -18,7 +18,10 @@ class Interaction extends Landscape {
 
   Interaction() {
     super();
-
+    
+    //instantiate the new finger position from the leap motion
+    newFingerPos = new PVector();
+    
     //store finger height data in this variable
     // ArrayList<Float> heightTargetArray = new ArrayList<Float>(getFingers().size());
     //println("list size:: "+getFingers().size());
@@ -47,7 +50,7 @@ class Interaction extends Landscape {
       if (heightTargetArray.size() > 0 && fingerPos.size() > 0) {
         //println("list size:: "+heightTargetArray.size());
         newFingerPosY = heightTargetArray.get(0);
-        newFingerPos = fingerPos.get(0, 0, 0);
+        newFingerPos = fingerPos.get(0);
       }
       
       //reset the timer
@@ -73,7 +76,7 @@ class Interaction extends Landscape {
 
         //Float fingersY = fingerCurrent.getPositionOfJointTip();
 
-        println("handId:: "+handi+" finger"+ i+":: "+fingersY);
+        println("handId:: "+handi+" finger"+ i+":: "+joint);
         //println("handId:: "+handi+" finger"+ i+":: "+joint);
         returnValues.add(joint);
       }
@@ -97,11 +100,11 @@ class Interaction extends Landscape {
         Finger fingerCurrent = hand.getIndexFinger();
         //PVector joint = fingerCurrent.getPositionOfJointTip();
 
-        Float fingersY = fingerCurrent.getPositionOfJointTip().y;
+        Float fingerY = fingerCurrent.getPositionOfJointTip().y;
 
-        println("handId:: "+handi+" finger"+ i+":: "+fingersY);
+        //println("handId:: "+handi+" finger"+ i+":: "+fingerY);
         //println("handId:: "+handi+" finger"+ i+":: "+joint);
-        returnValues.add(fingersY);
+        returnValues.add(fingerY);
       }
       handi++;
     }
@@ -112,7 +115,7 @@ class Interaction extends Landscape {
   void update() {
     //going backwards in the y axes in three dimension
     //to get a sense of movement in 3d space
-    flying -= 0.05;
+    flying -= 0.02;
     float yoff = flying;
 
     //float yoff =+ 0.02;
@@ -120,11 +123,11 @@ class Interaction extends Landscape {
     //nested for loop for the terrain oscillation 
     //and control of mesh with vertex
     for (int y = 0; y < rows; y++) {
-      float xoff = 0;
+      float xoff = 0.1;
       for (int x = 0; x < cols; x++) {
         
         //mapping the values from the finger data position to the correct landscape values
-        fingerHeightY = map(newFingerPosY, 350, 200, 0, 200);
+        fingerHeightY = map(newFingerPosY, 300, 150, 0, 200);
         
         float r = fingerHeightY/(float)125;
         //height formula with the array list for the landscape movement
@@ -137,9 +140,11 @@ class Interaction extends Landscape {
         
         //set the new height target
         terrain[x][y].targetHeight = localHeightTarget;
-
-        //update the movement of z values by keep as well the previous value
-        terrain[x][y].calcZ();
+        
+        //keep track of the previous and transition of the movement
+        terrain[x][y].calcZmesh();
+        
+        //update the movement of the terrain
         terrain[x][y].origin.z = map(noise(xoff, yoff), 0, 1, -terrain[x][y].prevTarget, terrain[x][y].prevTarget);
         xoff += 0.1;
       }
@@ -150,7 +155,7 @@ class Interaction extends Landscape {
   void meshMovement() {
     //going backwards in the y axes in three dimension
     //to get a sense of movement in 3d space
-    flying -= 0.05;
+    flying -= 0.02;
     float yoff = flying;
 
     //float yoff =+ 0.02;
@@ -158,18 +163,18 @@ class Interaction extends Landscape {
     //nested for loop for the terrain oscillation 
     //and control of mesh with vertex
     for (int y = 0; y < rows; y++) {
-      float xoff = 0;
+      float xoff = 0.1;
       for (int x = 0; x < cols; x++) {
         
         //mapping the values from the finger data position to the correct landscape values
         //these values need to be changed in order to map the leap motion space according to the landscape
-        fingerHeight = new PVector(map(newFingerPos.x, 350, 200, 0, 200), map(newFingerPos.y, 350, 200, 0, 200), map(newFingerPos.z, 350, 200, 0, 200));
+        fingerHeight = new PVector(map(newFingerPos.x, 0, 450, 0, 300), map(newFingerPos.y, 300, 150, 0, 200), map(newFingerPos.z, 20, 60, 0, 100));
         
-        //easing value on y axes according to new position form the leap motion
+        //easing value on y axes according to new position from the leap motion
         float r = newFingerPos.y/(float)125;
+        
         //finger values from the leap motion in space 
-        //switch the values according to the landscape???
-        PVector fingerTargetPos = new PVector(newFingerPos.x, newFingerPos.z, newFingerPos.y-(y*r));
+        PVector fingerTargetPos = new PVector(newFingerPos.x, newFingerPos.y-(y*r), newFingerPos.z);
         
         // limit local height
         //if (localHeightTarget <= 5) {
@@ -180,17 +185,18 @@ class Interaction extends Landscape {
         terrain[x][y].targetHeightFinger = fingerTargetPos;
         
         //update the movement of z values by keep as well the previous value
-        terrain[x][y].calcZ();
+        terrain[x][y].calcXfinger();
+        terrain[x][y].calcYfinger();
+        terrain[x][y].calcZfinger();
+        
         //change the initial values of the landscape generated by seaData to the new values of the fingers
-        terrain[x][y].origin.x = map(noise(xoff, yoff), 0, 1, -terrain[x][y].prevTarget, terrain[x][y].prevTarget);
-        terrain[x][y].origin.y = map(noise(xoff, yoff), 0, 1, -terrain[x][y].prevTarget, terrain[x][y].prevTarget);
-        terrain[x][y].origin.z = map(noise(xoff, yoff), 0, 1, -terrain[x][y].prevTarget, terrain[x][y].prevTarget);
+        terrain[x][y].origin.x = map(noise(xoff, yoff), 0, 1, -terrain[x][y].prevTargetHeightFinger.x, terrain[x][y].prevTargetHeightFinger.x);
+        terrain[x][y].origin.y = map(noise(xoff, yoff), 0, 1, -terrain[x][y].prevTargetHeightFinger.y, terrain[x][y].prevTargetHeightFinger.y);
+        terrain[x][y].origin.z = map(noise(xoff, yoff), 0, 1, -terrain[x][y].prevTargetHeightFinger.x, terrain[x][y].prevTargetHeightFinger.z);
               
         xoff += 0.1;
       }
       yoff += 0.1;
     }
-    
-    
   }
 }

@@ -28,9 +28,9 @@ void setup() {
   //set display
   background(0);
   //fullScreen(P3D);
-  size(1200, 800, P3D);
+  size(640, 360, P3D);
   //hide mouse
-  noCursor();
+  //noCursor();
 
   //sound instantiation
   //m = new Minim(this);
@@ -46,7 +46,8 @@ void setup() {
 
   //leap instantiation
   leap = new LeapMotion(this);
-
+  
+  //interaction intantiation
   i = new Interaction();
 }
 
@@ -75,13 +76,17 @@ void draw() {
   //Here I have to say which one to control the landscape with the interaction or seaData
   
   //display and update the landscape
+  //land.display();
+  //land.update();
+  
+  //activate interaction
   i.display();
-  i.update();
+  //i.update();
+  i.meshMovement();
+  i.run();
 
   //video display horizontal
-  //display();
-
-  i.run();
+  //display(); 
 }
 
 //display the movie on the landscape
