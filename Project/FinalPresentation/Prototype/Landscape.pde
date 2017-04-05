@@ -2,7 +2,7 @@ class Landscape {
   //object variables
   Random generator;
   seaData data;
-  
+
   //2d array of landcape terrain
   Coordinate[][] terrain;
 
@@ -19,8 +19,8 @@ class Landscape {
   //columns, rows, scale, width and height
   int cols, rows;
   int scl = 10;
-  int w = 3000;
-  int h = 1000;
+  int w = 1000;
+  int h = 360;
 
   //mesh movement
   float flying = 0;
@@ -57,7 +57,7 @@ class Landscape {
     //speed of movement
     flying -= 0.02;
     float yoff = flying;
-    
+
     //nested loop of rows and cols to create mesh
     for (int y = 0; y < rows; y++) {
       float xoff = 0.1;
@@ -85,7 +85,7 @@ class Landscape {
     //to get a sense of movement in 3d space
     flying -= 0.02;
     float yoff = flying;
-    
+
     //float yoff =+ 0.02;
 
     /*this boolean controls when we should change 
@@ -134,7 +134,7 @@ class Landscape {
           terrain[x][y].targetHeight = localHeightTarget;
         }
 
-        //update the movement of z values by keeping as well the previous value
+        //calculate the Z value and update it to the movement of the lanscape
         terrain[x][y].calcZmesh();
         terrain[x][y].origin.z = map(noise(xoff, yoff), 0, 1, -terrain[x][y].prevTarget, terrain[x][y].prevTarget);
         xoff += 0.1;
@@ -153,14 +153,14 @@ class Landscape {
     //close to the bottom edge
     translate(width/2, height/2);
     rotateX(PI/2.3);
-    translate(-w/2, -h/30);
+    translate(-width/2, -height/2);
 
     //nested for loop to create the landscape with vertex
     for (int y = 0; y < rows-1; y++) {
 
       //triangle changes
       beginShape(TRIANGLE_STRIP);
-      
+
       for (int x = 0; x < cols-1; x++) {
 
         //fill and stroke colors of landscape
@@ -187,7 +187,7 @@ class Landscape {
         //various color possibilities
         //blue possibiity 1
         fill(0, 150, 200);
-        stroke(0,200,250);
+        stroke(0, 200, 250);
 
         //blue possibiity 2
         //fill(0,0,70, 200);
@@ -219,5 +219,6 @@ class Landscape {
       }
       endShape();
     }
+    
   }
 }

@@ -1,14 +1,20 @@
 class Coordinate {
   PVector origin;
   //color strokeColor = color(255);
-  boolean isUndulating =false;
+  boolean isUndulating = false;
   
   float targetHeight;
   float prevTarget;
   
   //new height from the finger interaction  
   PVector targetHeightFinger;
+  //previous finger interaction
   PVector prevTargetHeightFinger;
+  
+  PVector screenCoordinate = new PVector();
+  
+  //check if the vertex is active
+  boolean isActive;
   
   //constructor
   Coordinate(float x, float y, float z, float _t) {
@@ -17,7 +23,7 @@ class Coordinate {
     prevTarget =_t;
     
     //instantiating the currentPos and the targetHeightFinger 
-    targetHeightFinger = new PVector(x, y, z);
+    targetHeightFinger = new PVector();
     prevTargetHeightFinger = new PVector(origin.x, origin.y, origin.z);
   }
 

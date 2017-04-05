@@ -23,12 +23,13 @@ AudioPlayer p;
 Movie movie;
 LeapMotion leap;
 Interaction i;
+Random generator;
 
 void setup() {
   //set display
   background(0);
   //fullScreen(P3D);
-  size(640, 360, P3D);
+  size(1000, 360, P3D);
   //hide mouse
   //noCursor();
 
@@ -82,7 +83,9 @@ void draw() {
   //activate interaction
   i.display();
   //i.update();
-  i.meshMovement();
+  i.meshFingerMovement();
+  i.getAction();
+  //i.releasedAction();
   i.run();
 
   //video display horizontal
