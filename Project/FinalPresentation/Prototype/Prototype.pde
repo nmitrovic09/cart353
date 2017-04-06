@@ -29,7 +29,7 @@ void setup() {
   //set display
   background(0);
   //fullScreen(P3D);
-  size(1000, 360, P3D);
+  size(1300, 750, P3D);
   //hide mouse
   //noCursor();
 
@@ -53,7 +53,7 @@ void setup() {
 }
 
 // ======================================================
-// 1. Callbacks
+// Callbacks
 
 void leapOnInit() {
   // println("Leap Motion Init");
@@ -83,8 +83,7 @@ void draw() {
   //activate interaction
   i.display();
   //i.update();
-  i.meshFingerMovement();
-  i.getAction();
+
   //i.releasedAction();
   i.run();
 

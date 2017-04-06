@@ -1,6 +1,6 @@
 class Coordinate {
   PVector origin;
-  //color strokeColor = color(255);
+  color strokeColor = color(255);
   boolean isUndulating = false;
   
   float targetHeight;
@@ -11,10 +11,12 @@ class Coordinate {
   //previous finger interaction
   PVector prevTargetHeightFinger;
   
-  PVector screenCoordinate = new PVector();
+  PVector screenCoordinate;
   
   //check if the vertex is active
   boolean isActive;
+  
+
   
   //constructor
   Coordinate(float x, float y, float z, float _t) {
@@ -25,6 +27,7 @@ class Coordinate {
     //instantiating the currentPos and the targetHeightFinger 
     targetHeightFinger = new PVector();
     prevTargetHeightFinger = new PVector(origin.x, origin.y, origin.z);
+    screenCoordinate = new PVector();
   }
 
   //methods
@@ -44,7 +47,6 @@ class Coordinate {
   void calcDir() {
     
   }
-  
  
   void calcZmesh() {
     
@@ -55,44 +57,6 @@ class Coordinate {
         prevTarget-=.4;
       else
         prevTarget+=.4;
-    }
-  }
-  
-  //keep track of finger x,y,z position according to the landscape
-  
-  void calcXfinger() {
-    
-    float distance = abs(prevTargetHeightFinger.x - targetHeightFinger.x);
-    
-    if (distance>1) {
-      if (prevTargetHeightFinger.x > targetHeightFinger.x)
-        prevTargetHeightFinger.x -=.4;
-      else
-        prevTargetHeightFinger.x +=.4;
-    }
-  }
-  
-  void calcYfinger() {
-    
-    float distance = abs(prevTargetHeightFinger.y - targetHeightFinger.y);
-    
-    if (distance>1) {
-      if (prevTargetHeightFinger.y > targetHeightFinger.y)
-        prevTargetHeightFinger.y -=.4;
-      else
-        prevTargetHeightFinger.y +=.4;
-    }
-  }
-  
-  void calcZfinger() {
-    
-    float distance = abs(prevTargetHeightFinger.z - targetHeightFinger.z);
-    
-    if (distance>1) {
-      if (prevTargetHeightFinger.z > targetHeightFinger.z)
-        prevTargetHeightFinger.z -=.4;
-      else
-        prevTargetHeightFinger.z +=.4;
     }
   }
 }

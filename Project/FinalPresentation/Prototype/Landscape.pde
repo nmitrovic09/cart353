@@ -19,8 +19,8 @@ class Landscape {
   //columns, rows, scale, width and height
   int cols, rows;
   int scl = 10;
-  int w = 1000;
-  int h = 360;
+  int w = 1500;
+  int h = 600;
 
   //mesh movement
   float flying = 0;
@@ -55,7 +55,7 @@ class Landscape {
   void init() {
 
     //speed of movement
-    flying -= 0.02;
+    flying -= 0.01;
     float yoff = flying;
 
     //nested loop of rows and cols to create mesh
@@ -77,13 +77,17 @@ class Landscape {
       yoff += 0.1;
     }
   }
+  
+  void run() {
+    
+  }
 
   //movement of landscape
   void update() {
 
     //going backwards in the y axes in three dimension
     //to get a sense of movement in 3d space
-    flying -= 0.02;
+    flying -= 0.01;
     float yoff = flying;
 
     //float yoff =+ 0.02;
@@ -153,7 +157,7 @@ class Landscape {
     //close to the bottom edge
     translate(width/2, height/2);
     rotateX(PI/2.3);
-    translate(-width/2, -height/2);
+    translate(-w/2, -h/15);
 
     //nested for loop to create the landscape with vertex
     for (int y = 0; y < rows-1; y++) {
