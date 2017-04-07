@@ -19,8 +19,8 @@ class Landscape {
   //columns, rows, scale, width and height
   int cols, rows;
   int scl = 10;
-  int w = 1500;
-  int h = 600;
+  int w = 800;
+  int h = 300;
 
   //mesh movement
   float flying = 0;
@@ -28,7 +28,7 @@ class Landscape {
   //time values specification
   float timePassed = 0;
   float currentTime = 0;
-  float interval = 1000;
+  float interval = 500;
 
   //constructor
   Landscape() {
@@ -40,7 +40,6 @@ class Landscape {
     generator = new Random();
     terrain = new Coordinate[cols][rows];
     data = new seaData();
-
 
     //store sea height data in this variable
     heightTargetArray = data.getHeightArray();
@@ -55,12 +54,11 @@ class Landscape {
   void init() {
 
     //speed of movement
-    flying -= 0.01;
     float yoff = flying;
 
     //nested loop of rows and cols to create mesh
     for (int y = 0; y < rows; y++) {
-      float xoff = 0.1;
+      float xoff = 0;
       for (int x = 0; x < cols; x++) {
 
         // work out a decreasing offset when getting 
@@ -79,7 +77,6 @@ class Landscape {
   }
   
   void run() {
-    
   }
 
   //movement of landscape
@@ -89,8 +86,6 @@ class Landscape {
     //to get a sense of movement in 3d space
     flying -= 0.01;
     float yoff = flying;
-
-    //float yoff =+ 0.02;
 
     /*this boolean controls when we should change 
      the sea data value elevation*/
@@ -102,7 +97,7 @@ class Landscape {
     //if the time has passed change the inputted data value
     if (timePassed > interval) {
       //change the elevation
-      changeState = true;
+      changeState=true;
 
       //if we are at the end of array go back to beginning
       if (indexNums == heightTargetArray.length-1) {
@@ -118,7 +113,7 @@ class Landscape {
     //nested for loop for the terrain oscillation 
     //and control of mesh with vertex
     for (int y = 0; y < rows; y++) {
-      float xoff = 0.1;
+      float xoff = 0;
       for (int x = 0; x < cols; x++) {
 
         //if interval has been reset
@@ -138,8 +133,8 @@ class Landscape {
           terrain[x][y].targetHeight = localHeightTarget;
         }
 
-        //calculate the Z value and update it to the movement of the lanscape
-        terrain[x][y].calcZmesh();
+        //update the movement of z values by keep as well the previous value
+        terrain[x][y].calcZ();
         terrain[x][y].origin.z = map(noise(xoff, yoff), 0, 1, -terrain[x][y].prevTarget, terrain[x][y].prevTarget);
         xoff += 0.1;
       }
@@ -157,14 +152,14 @@ class Landscape {
     //close to the bottom edge
     translate(width/2, height/2);
     rotateX(PI/2.3);
-    translate(-w/2, -h/15);
+    translate(-w/2, -h/30);
 
     //nested for loop to create the landscape with vertex
     for (int y = 0; y < rows-1; y++) {
 
       //triangle changes
       beginShape(TRIANGLE_STRIP);
-
+      
       for (int x = 0; x < cols-1; x++) {
 
         //fill and stroke colors of landscape
@@ -190,8 +185,8 @@ class Landscape {
 
         //various color possibilities
         //blue possibiity 1
-        fill(0, 150, 200);
-        stroke(0, 200, 250);
+        //fill(0);
+        //stroke(0,0,200);
 
         //blue possibiity 2
         //fill(0,0,70, 200);
@@ -206,16 +201,16 @@ class Landscape {
         //stroke(0,100,150);
 
         //blue possibiity 5
-        //fill(0, 80, 120, 100);
-        //stroke(0, 100, 150, 100);
+        fill(0, 150, 200);
+        stroke(0, 200, 250);
 
         //blue possibiity 6
         //fill(0,0,50);
         //stroke(0,100,150);
 
         //blue possibiity 7
-        //fill(0,80,120);
-        //stroke(0,0,70);
+        //fill(0,80,120, 50);
+        //stroke(0,0,70,100);
 
         //create the vertex of landscape
         vertex(terrain[x][y].getOx(), terrain[x][y].getOy(), terrain[x][y].getOz());
@@ -223,6 +218,5 @@ class Landscape {
       }
       endShape();
     }
-    
   }
 }
