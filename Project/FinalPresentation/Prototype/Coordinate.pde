@@ -1,8 +1,8 @@
 class Coordinate {
-  //position and color of landscape
+  
+  //initial origin and interaction origin
   PVector origin;
-  color strokeColor = color(255);
-  boolean isUndulating =false;
+  PVector interOrigin;
 
   /*target Height and previous target height from
    the initial tarting seaData landscape*/
@@ -10,7 +10,8 @@ class Coordinate {
   float prevTarget;
 
   /*the coordinates of the screen 
-   (coordinates of the landscape for interaction)*/
+   (screen coordinates in correspondance 
+   to the landscape for interaction)*/
   PVector screenCoordinate;
 
   //Target position of finger 
@@ -29,6 +30,7 @@ class Coordinate {
 
     screenCoordinate = new PVector();
     prevFingerTarget = new PVector();
+    interOrigin = new PVector();
   }
 
   //methods

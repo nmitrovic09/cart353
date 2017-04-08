@@ -21,7 +21,7 @@ class Interaction extends Landscape {
   int indexY;
 
   //timer
-  float interval = 50;
+  float interval = 5000;
 
   Interaction() {
     super();
@@ -31,90 +31,105 @@ class Interaction extends Landscape {
   }
 
   void run() {
+
     //store Leap finger y coordinante array in this array
     fingerHeightArray = getLeapFingerPosY();
     //store Leap finger position array into this array
     fingerPosArray = getLeapFinger();
 
-    /*if the arraylists contain at least one or more values 
-     of the fingers, run the interaction*/
+    /*----------if the arraylists contain finger values for the interaction-------------*/
     if (fingerHeightArray.size() != 0 && fingerPosArray.size() != 0) {
+
       //get the first values of both arraylist of Leap motion
       fingerHeight = fingerHeightArray.get(0);
       fingerPos = fingerPosArray.get(0);
 
       //mapping the values from the finger data position to the correct landscape values
-      mapFingerHeight = map(fingerHeight, 100, 300, 200, 0);
-      //mapFingerHeight = constrain(fingerHeight, 0, height);
-      mapFingerSpace = new PVector(map(fingerPos.x, 200, 400, 0, width), map(fingerPos.y, 150, 350, 300, 0), map(fingerPos.z, 30, 90, height, 0));
+      mapFingerHeight = map(fingerHeight, 100, 300, 100, 0);
+      //mapFingerHeight = constrain(mapFingerHeight, 0, 100);
+      mapFingerSpace = new PVector(map(fingerPos.x, 200, 400, 0, width), map(fingerPos.y, 150, 350, 100, 0), map(fingerPos.z, 30, 90, height, 0));
       //mapFingerSpace = constrain(fingerHeight, 0, width);
 
-      //update the interaction to the landcape
+      //update the height interaction to the landcape
       fingerHeightUpdate();
+
+      //update the initial values of landscape from seaData
+      update();
+
+      //update the interaction to the landcape
       fingerMeshInteraction();
 
       /*detect and control the place of the finger
        in relation to landscape*/
-      int testVertexResult = testFingerAgainstVertex();
+      testFingerAgainstVertex();
 
-      /*decreasing vertex from the finger posititon
-       after the time has passed*/
-      // get time
-      timePassed = millis()-currentTime;
 
-      //if the time has passed change the inputted data value
-      if (timePassed > interval) {
+      /*----------if there is no interaction (no finger detected)-------------*/
+    } else {
 
-        if (testVertexResult > 0) {
+      //update the initial landscape movement
+      update();
 
-          
-          //reset the timer
-          timePassed = 0;
-          currentTime = millis();
+      /*look through the landscape to transition 
+       between the interaction values to landscape seaData */
+      for (int y = 0; y < rows; y++) {
+        for (int x = 0; x < cols; x++) {
+
+          //the terrain interaction with the finger is not active anymore
+          //do the easing of vertex and transition to initial values of landscape from seaData
+          terrain[x][y].isActive = false;
+
+          //check if there is a previous target of the finger
+          if (terrain[x][y].prevFingerTarget.y != 0) {
+            //if yes, do the easing of the interaction to the landscape original values
+            terrain[x][y].origin.z = lerp(terrain[x][y].prevFingerTarget.y, terrain[x][y].origin.z, 0.01);
+            terrain[x][y].prevFingerTarget.y = terrain[x][y].origin.z;
+
+
+            // float t =terrain[x][y].prevFingerTarget.y + terrain[x][y].origin.z;
+            //terrain[x][y].origin.z-=terrain[x][y].interOrigin.z;
+            //terrain[x][y].prevTarget = lerp(terrain[x][y].origin.z, terrain[x][y].prevTarget, 0.1);
+          }
         }
       }
     }
   }
-
 
   void update() {
     super.update();
   }
 
-  int testFingerAgainstVertex() {
+  /*test the vertex interaction with finger*/
+  //if counter value is 0 = interaction is true(active)
+  //else if counter velue is > 0 = false(not active)
+  void testFingerAgainstVertex() {
 
+    //find the grid cell in the landscape
     indexX = ceil(mapFingerSpace.x/10);
     indexY = ceil(mapFingerSpace.z/10);
-
-    int counter = 0;
 
     //find the matching one
     for (int y = 0; y < rows; y++) {
       for (int x = 0; x < cols; x++) {
 
-        //if the finger is in the area
+        //if the finger is in the cell area according to the landscape
         if (int(terrain[x][y].screenCoordinate.y/10) == indexY && int(terrain[x][y].screenCoordinate.x/10) == indexX) {
+          //update the interaction with the finger
           terrain[x][y].isActive = true;
-          terrain[x][y].strokeColor = color(255, 0, 0);
-          counter++;
         } else {
-
-          //terrain[x][y].isActive = false;
-          //terrain[x][y].strokeColor = color(255);
+          //decrease the vertex after the timer has passed
+          //make it the vertex not active in order to decrease
+          terrain[x][y].isActive = false;
         }
       }
     }
-    return counter;
   }
 
+  //function for finger interaction with the landscape
   void fingerMeshInteraction() {
-    //going backwards in the y axes in three dimension
-    //to get a sense of movement in 3d space
-    flying -= 0.01;
-    float yoff = flying;
 
-    //float yoff =+ 0.1;
-
+    float yoff =+ 0.1;
+    
     //nested for loop for the terrain oscillation 
     //and control of mesh with vertex
     for (int y = 0; y < rows; y++) {
@@ -122,11 +137,12 @@ class Interaction extends Landscape {
       for (int x = 0; x < cols; x++) {
 
         if (terrain[x][y].isActive) {
-          //easing value on y axes according to new position from the leap motion
-          //float r = mapFingerSpace.y/(float)500;
-          //fingerInSpace.y-(y*r)
 
-          //Target Position of finger according to the leap motion values
+          //easing value on y axes according to new position from the leap motion
+          //float r = mapFingerSpace.y/(float)125;
+          //mapFingerSpace.y-(y*r)
+
+          //Target finger posiiton according to the leap motion values
           PVector fingerCoordinate = new PVector(mapFingerSpace.x, mapFingerSpace.y, mapFingerSpace.z);
 
           // limit local height
@@ -137,30 +153,39 @@ class Interaction extends Landscape {
           //set the new height target to the landscape
           terrain[x][y].fingerTarget = fingerCoordinate;
 
-          terrain[x][y].origin.z = lerp(terrain[x][y].prevFingerTarget.y, fingerCoordinate.y, 0.2);
-          terrain[x][y].prevFingerTarget.y = terrain[x][y].origin.z ;
+          //the elevation is calculated from the previous finger target to the Targeted finger coordinate
+          terrain[x][y].interOrigin.z = lerp(terrain[x][y].prevFingerTarget.y, fingerCoordinate.y, 0.001);
 
-          //terrain[x][y].origin.z = map(noise(xoff, yoff), 0, 1, -terrain[x][y].prevFingerTarget.y, terrain[x][y].prevFingerTarget.y);
+          //elevate the origin.z value to the target height of finger
+          terrain[x][y].origin.z = terrain[x][y].interOrigin.z*2;
+          
+          //assign the elevation to the previous one in order to keep track of it
+          terrain[x][y].prevFingerTarget.y = terrain[x][y].origin.z;
         } else {
-          //easing formula for each vertex after the interaction
-          terrain[x][y].calcZ();
-          terrain[x][y].origin.z = map(noise(xoff, yoff), 0, 1, -terrain[x][y].prevFingerTarget.y, terrain[x][y].prevFingerTarget.y);       
-          terrain[x][y].prevFingerTarget.y = terrain[x][y].origin.z ;
+
+          /*if the vertex is not active anymore,
+           decrease the vertex to the original values
+           of landscape or to the interaction height,
+           (funtion fingerHeightUpdate())
+           */
+
+          if (terrain[x][y].prevFingerTarget.y!=0) {
+            //decrease the height of the interaction to the landscape values (reversed from the one above)
+            terrain[x][y].origin.z = lerp(terrain[x][y].prevFingerTarget.y, terrain[x][y].origin.z, 0.05);
+            terrain[x][y].prevFingerTarget.y = terrain[x][y].origin.z;
+          }
+
+          xoff += 0.1;
         }
-        xoff += 0.1;
+        yoff += 0.1;
       }
-      yoff += 0.1;
     }
   }
 
-  //movement of landscape with the height of the hand finger
+  //function for the height finger interaction with the landscape
   void fingerHeightUpdate() {
-    /*going backwards in the y axes in three dimension
-     to get a sense of movement in 3d space*/
-    flying -= 0.01;
-    float yoff = flying;
 
-    //float yoff =+ 0.1;
+    float yoff =+ 0.01;
 
     /*nested for loop for the terrain oscillation 
      and control of mesh with the fingers height */
@@ -168,9 +193,10 @@ class Interaction extends Landscape {
       float xoff = 0.1;
       for (int x = 0; x < cols; x++) {
 
-        //easing formula
-        float r = mapFingerHeight/(float)125;
-        localHeightTarget = (mapFingerHeight-(y*r));
+        //easing formula with the mapped height value of finger
+        //float r = mapFingerHeight/(float)125;
+        //(mapFingerHeight-(y*r))
+        localHeightTarget = mapFingerHeight;
 
         // limit local height
         if (localHeightTarget <= 5) {
@@ -192,7 +218,7 @@ class Interaction extends Landscape {
     }
   }
 
-  //displaying the landscape on the screen
+  //displaying the landscape
   void display() {
 
     //load video to the landscape
@@ -251,11 +277,12 @@ class Interaction extends Landscape {
       }
       endShape();
     }
+    //testing for finger on mesh
     //fill(0, 0, 255);
     //ellipse(mapFingerSpace.x, mapFingerSpace.z, 50, 50);
   }
 
-  //get the finger coordinates and store in arraylist
+  //get the finger coordinates from the leap
   ArrayList<PVector> getLeapFinger() {
 
     //how many hands are detected (for the println only)
@@ -269,15 +296,19 @@ class Interaction extends Landscape {
       //check for how many fingers are detected
       for (int i = 0; i < 5; i++) {
 
+        for (Finger finger : hand.getFingers()) {
+          PVector fingerPosition  = finger.getPosition();
+        }
+
         //get the current index finger coordinates
         Finger fingerCurrent = hand.getIndexFinger();
 
-        //get the tip(end) of the index finger coordinates
+        //get only the y value of the index finger
         PVector joint = fingerCurrent.getPositionOfJointTip();
 
-        //println("handId:: "+handi+" finger"+ i+":: "+joint);
+        //println("handId:: "+handi+" finger"+ i+":: "+ joint);
 
-        //add the index finger position to the returning arraylist
+        //add the index finger y value to the returning arraylist
         values.add(joint);
       }
       //increment to find which hand is detected (for the println only)
@@ -286,7 +317,7 @@ class Interaction extends Landscape {
     return values;
   }
 
-  //get the finger Y coordinate and store in arraylist
+  //get the finger Y coordinate from the leap
   ArrayList<Float> getLeapFingerPosY() {
 
     //how many hands are detected (for the println only)

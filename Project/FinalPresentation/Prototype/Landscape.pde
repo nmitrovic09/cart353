@@ -15,6 +15,8 @@ class Landscape {
   //target array value
   float localHeightTarget;
 
+  float nonInteractionHeight;
+
   //mesh dimensions
   //columns, rows, scale, width and height
   int cols, rows;
@@ -75,7 +77,7 @@ class Landscape {
       yoff += 0.1;
     }
   }
-  
+
   void run() {
   }
 
@@ -89,7 +91,7 @@ class Landscape {
 
     /*this boolean controls when we should change 
      the sea data value elevation*/
-    boolean changeState =false;
+    boolean changeState = false;
 
     // get time
     timePassed = millis()-currentTime;
@@ -122,16 +124,17 @@ class Landscape {
           //decreasing offset
           float r = heightTargetArray[0]/(float)125;
           //height formula with the array list for the landscape movement
-          localHeightTarget = (heightTargetArray[indexNums]-(y*r))*30;
+          nonInteractionHeight = (heightTargetArray[indexNums]-(y*r))*30;
 
           // limit local height
-          if (localHeightTarget <= 5) {
-            localHeightTarget = 5;
+          if (nonInteractionHeight <= 5) {
+            nonInteractionHeight = 5;
           }
 
           //set the new height target
-          terrain[x][y].targetHeight = localHeightTarget;
+          terrain[x][y].targetHeight = nonInteractionHeight;
         }
+
 
         //update the movement of z values by keep as well the previous value
         terrain[x][y].calcZ();
@@ -159,7 +162,7 @@ class Landscape {
 
       //triangle changes
       beginShape(TRIANGLE_STRIP);
-      
+
       for (int x = 0; x < cols-1; x++) {
 
         //fill and stroke colors of landscape

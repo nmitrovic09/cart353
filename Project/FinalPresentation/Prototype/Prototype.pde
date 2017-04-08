@@ -63,7 +63,6 @@ void draw() {
   
   i.display();
   i.run();
-  i.update();
   
   //video display horizontal
   //display();
