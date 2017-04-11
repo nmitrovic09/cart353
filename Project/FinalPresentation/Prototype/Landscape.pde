@@ -21,8 +21,8 @@ class Landscape {
   //columns, rows, scale, width and height
   int cols, rows;
   int scl = 10;
-  int w = 800;
-  int h = 300;
+  int w = 1300;
+  int h = 900;
 
   //mesh movement
   float flying = 0;
@@ -186,34 +186,18 @@ class Landscape {
         //noFill();
         //fill(c);
 
-        //various color possibilities
-        //blue possibiity 1
-        //fill(0);
-        //stroke(0,0,200);
+        //various color possibilities  
+        //blue possibiity 2
+        fill(0, 0, 200, 200);
+        stroke(0, 150);
 
         //blue possibiity 2
         //fill(0,0,70, 200);
-        //stroke(0);
-
-        //blue possibiity 3
-        //fill(0,0,50);
-        //stroke(0,0,150);
+        //stroke(100, 150);
 
         //blue possibiity 4
         //fill(0,0,80);
         //stroke(0,100,150);
-
-        //blue possibiity 5
-        fill(0, 150, 200);
-        stroke(0, 200, 250);
-
-        //blue possibiity 6
-        //fill(0,0,50);
-        //stroke(0,100,150);
-
-        //blue possibiity 7
-        //fill(0,80,120, 50);
-        //stroke(0,0,70,100);
 
         //create the vertex of landscape
         vertex(terrain[x][y].getOx(), terrain[x][y].getOy(), terrain[x][y].getOz());

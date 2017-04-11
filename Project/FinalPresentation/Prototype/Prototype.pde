@@ -34,7 +34,7 @@ void setup() {
   //set display
   background(0);
   //fullScreen(P3D);
-  size(640,360,P3D);
+  size(1300, 700, P3D);
   //hide mouse
   //noCursor();
   
