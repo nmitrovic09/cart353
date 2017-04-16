@@ -22,7 +22,7 @@ class Landscape {
   int cols, rows;
   int scl = 10;
   int w = 1300;
-  int h = 900;
+  int h = 800;
 
   //mesh movement
   float flying = 0;

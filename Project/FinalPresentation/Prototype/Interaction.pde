@@ -51,7 +51,7 @@ class Interaction extends Landscape {
        //mapping the values from the finger data position to the correct landscape values
       mapFingerHeight = map(fingerHeight, 100, 300, 100, 0);
       //mapFingerHeight = constrain(mapFingerHeight, 0, 100);
-      mapFingersSpace = new PVector(map(fingersPos.x, 300, 900, 0, width), map(fingersPos.y, 400, 670, 200, 0), map(fingersPos.z, 30, 70, height, 0));
+      mapFingersSpace = new PVector(map(fingersPos.x, 100, 900, 0, width), map(fingersPos.y, 0, 750, 100, 0), map(fingersPos.z, 20, 80, height, 0));
       //mapFingerSpace = constrain(fingerHeight, 0, width);
 
       //update the height interaction to the landcape
