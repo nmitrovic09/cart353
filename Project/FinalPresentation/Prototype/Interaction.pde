@@ -48,6 +48,10 @@ class Interaction extends Landscape {
         fingersPos = fingersPosArray.get(i);
       }
 
+      /*You can change these values to mapping correctly according to
+      the size of the display. Before to do that uncomment the
+      printing line of the value in the returning Arraylist at
+      the end of this class*/
        //mapping the values from the finger data position to the correct landscape values
       mapFingerHeight = map(fingerHeight, 100, 300, 100, 0);
       //mapFingerHeight = constrain(mapFingerHeight, 0, 100);
@@ -306,7 +310,11 @@ class Interaction extends Landscape {
         Finger fingerCurrent = hand.getIndexFinger();
         
         PVector fingerPosition = fingerCurrent.getPositionOfJointTip();
-        println("handId:: "+handi+" finger"+ i+":: "+ fingerPosition);
+        
+        /*uncomment here the println, to follow the correct fingers 
+        and its values from the leap motion*/
+        //println("handId:: "+handi+" finger"+ i+":: "+ fingerPosition);
+        
         values.add(fingerPosition);
 
         //add the index finger y value to the returning arraylist

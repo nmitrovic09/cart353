@@ -2,6 +2,11 @@
  Prototype
  Nikola Mitrovic
  April 11th, 2017
+ 
+ -I have changed the size of the display to put it 
+ the whole width of the screen. As well, I have added some
+ comments where you can change the values to adjust the screen
+ and the leap motion mapping with its printing values.
  */
 
 //imported libraries
@@ -33,9 +38,12 @@ Random generator;
 void setup() {
   //set display
   background(0);
+  
+  //change the display to your will
   //fullScreen(P3D);
   size(displayWidth, displayHeight, P3D);
   //size(1300, 800, P3D);
+  
   //hide mouse
   //noCursor();
   
